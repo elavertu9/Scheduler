@@ -78,7 +78,14 @@
 
 <div id="simpleModal" class="modal">
     <div class="modal-content">
-        <h2>Adding Event to Calendar:</h2>
+        <h2 class="modalHeader">Adding Event to Calendar:</h2>
+        <input type="text" id="eventname" placeholder="Event Name:"/>
+        <input type="text" id="location" placeholder="Location:"/>
+        <input type="text" id="startdate" placeholder="Start Date:"/>
+        <input type="text" id="starttime" placeholder="Start Time:"/>
+        <input type="text" id="enddate" placeholder="End Date:"/>
+        <input type="text" id="endtime" placeholder="End Time:"/>
+        <button id="submitBtn" class="btn btn-primary">Submit</button>
         <button id="closeBtn" class="btn btn-primary">Close</button>
     </div>
 </div>
@@ -315,6 +322,26 @@
         if(e.target == modal){
             modal.style.display = 'none';
         }
+    }
+
+    // MODAL INPUT
+    var eventName = document.getElementById("eventname");
+    var location = document.getElementById("location");
+    var startDate = document.getElementById("startdate");
+    var startTime = document.getElementById("starttime");
+    var endDate = document.getElementById("enddate");
+    var endTime = document.getElementById("endtime");
+    var submitBtn = document.getElementById("submitBtn");
+
+    submitBtn.addEventListener('click', data);
+
+    function data(){
+        console.log(eventName.value);
+        console.log(location.value);
+        console.log(startDate.value);
+        console.log(startTime.value);
+        console.log(endDate.value);
+        console.log(endTime.value);
     }
 
 </script>

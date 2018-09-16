@@ -65,6 +65,7 @@
     </iframe>
 </div>
 
+<pre id="content" align="right"></pre>
 
 <script type="text/javascript">
     // Client ID and API key from the Developer Console
@@ -194,6 +195,12 @@
      * the authorized user's calendar. If no events are found an
      * appropriate message is printed.
      */
+
+    function appendPre(message) {
+        var pre = document.getElementById('content');
+        var textContent = document.createTextNode(message + '\n');
+        pre.appendChild(textContent);
+    }
 
     function listUpcomingEvents() {
         gapi.client.calendar.events.list({

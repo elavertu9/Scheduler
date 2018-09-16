@@ -42,6 +42,27 @@
         li a:hover {
             background-color: #111;
         }
+
+        pre.ayo {
+            width: 650px;
+            padding: 10px;
+            margin-right: 350px;
+            margin-left: 10px;
+            bottom: 525px;
+            float: right;
+            position: relative;
+        }
+
+        h1.pls {
+            width: 650px;
+            position: relative;
+            float: right;
+            align: left;
+            margin-right: 350px;
+            margin-left: 10px;
+            margin-bottom:10px;
+        }
+
     </style>
 
 </head>
@@ -54,6 +75,12 @@
     <li><a id="btnCreateEvents" onclick="makeApiCall();">Create Event</a></li>
 </ul>
 
+<h1 class="pls">Today's Activities <span id="datetime"></span></h1>
+
+    <script>
+        var dt = new Date();
+        document.getElementById("datetime").innerHTML = dt.toLocaleString();
+    </script>
 <div id="divifm">
     <iframe id="ifmCalendar"
 
@@ -65,7 +92,7 @@
     </iframe>
 </div>
 
-<pre id="content" align="right"></pre>
+<pre class="ayo" id="content"></pre>
 
 <script type="text/javascript">
     // Client ID and API key from the Developer Console

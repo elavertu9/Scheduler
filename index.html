@@ -63,6 +63,28 @@
             margin-bottom:10px;
         }
 
+        .modal{
+            display: none;
+            position: fixed;
+            z-index:1;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width:100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content{
+            background-color: #f4f4f4;
+            margin: 20% auto;
+            margin-top: 5%;
+            padding: 20%;
+            width: 70%;
+            height: 75%;
+            box-shadow: 0 5px 8px 0 rgba(0,0,0,0.2),0 7px 20px 0 rgba(0,0,0,0.17);
+        }
+
     </style>
 
 </head>
@@ -72,7 +94,7 @@
     <li><a>Scheduler</a></li>
     <li><a id="authorize_button">Login</a></li>
     <li><a href="/" id="signout_button">Logout</a></li>
-    <li><a id="btnCreateEvents" onclick="makeApiCall();">Create Event</a></li>
+    <li><button id="modalBtn" class="btn btn-primary">Create Event</button></li>
 </ul>
 
 <h1 class="pls">Today's Activities <span id="datetime"></span></h1>
@@ -81,6 +103,14 @@
         var dt = new Date();
         document.getElementById("datetime").innerHTML = dt.toLocaleString();
     </script>
+
+<div id="simpleModal" class="modal">
+    <div class="modal-content">
+        <h2>Adding Event to Calendar:</h2>
+        <button id="closeBtn" class="btn btn-primary">Close</button>
+    </div>
+</div>
+
 <div id="divifm">
     <iframe id="ifmCalendar"
 
@@ -290,6 +320,30 @@
             ]
         }
     };
+
+
+    // MODAL
+    var modal = document.getElementById('simpleModal');
+    var modalBtn = document.getElementById('modalBtn');
+    var closeBtn = document.getElementById('closeBtn');
+
+    modalBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    window.addEventListener('click', outsideClick);
+
+    function openModal(){
+        modal.style.display = 'block';
+    }
+
+    function closeModal(){
+        modal.style.display = 'none';
+    }
+
+    function outsideClick(e){
+        if(e.target == modal){
+            modal.style.display = 'none';
+        }
+    }
 
 </script>
 <script async defer src="https://apis.google.com/js/api.js"

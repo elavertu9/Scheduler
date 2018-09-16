@@ -27,6 +27,12 @@
             background-color: #333;
         }
 
+        li.r {
+            float: right;
+            margin-right: 35px;
+            margin-top: 5px;
+        }
+
         li {
             float: left;
         }
@@ -46,7 +52,7 @@
         pre.ayo {
             width: 650px;
             padding: 10px;
-            margin-right: 350px;
+            margin-right: 200px;
             margin-left: 10px;
             bottom: 525px;
             float: right;
@@ -58,7 +64,7 @@
             position: relative;
             float: right;
             align: left;
-            margin-right: 350px;
+            margin-right: 200px;
             margin-left: 10px;
             margin-bottom:10px;
         }
@@ -85,6 +91,16 @@
             box-shadow: 0 5px 8px 0 rgba(0,0,0,0.2),0 7px 20px 0 rgba(0,0,0,0.17);
         }
 
+
+        div.divifm {
+            margin-top: 20px;
+            margin-left: 100px;
+        }
+
+        div.oi{
+            margin-right: 20px;
+            margin-left: 20px;
+        }
     </style>
 
 </head>
@@ -94,8 +110,9 @@
     <li><a>Scheduler</a></li>
     <li><a id="authorize_button">Login</a></li>
     <li><a href="/" id="signout_button">Logout</a></li>
-    <li><button id="modalBtn" class="btn btn-primary">Create Event</button></li>
+    <li class="r"><button id="modalBtn" class="btn btn-primary">Create Event</button></li>
 </ul>
+<div id="haha" class="oi">
 
 <h1 class="pls">Today's Activities <span id="datetime"></span></h1>
 
@@ -111,7 +128,7 @@
     </div>
 </div>
 
-<div id="divifm">
+<div id="divifm" class="divifm" >
     <iframe id="ifmCalendar"
 
             src="https://calendar.google.com/calendar/embed?src=joe.blowmit%40gmail.com&ctz=America%2FNew_York" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"
@@ -124,6 +141,7 @@
 
 <pre class="ayo" id="content"></pre>
 
+</div>
 <script type="text/javascript">
     // Client ID and API key from the Developer Console
     var clientId = '173063735067-h6btqrp32rb3nqurdca2p2q4os5b2nuj.apps.googleusercontent.com';

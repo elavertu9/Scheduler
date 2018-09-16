@@ -42,7 +42,7 @@
     <li><a href="tasks">Tasks</a></li>
     <li><a href="createTask">Create a Task</a></li>
     <!--Add buttons to initiate auth sequence and sign out-->
-    <li><a id="authorize_button" style="display: none;">Login</a></li>
+    <li><a id="authorize_button" style="display: none;" data-onsuccess="onSignIn" >Login</a></li>
     <li><a href="" id="signout_button" style="display: none;">Sign Out</a></li>
 
 </ul>
@@ -70,6 +70,15 @@
     /**
      *  On load, called to load the auth2 library and API client library.
      */
+
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+    }
+
     function handleClientLoad() {
         gapi.load('client:auth2', initClient);
     }

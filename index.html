@@ -1,9 +1,7 @@
 <!DOCTYPE html>
-<h1>WORKING</h1>
-<!DOCTYPE html>
 <html>
 <head>
-    <title>Google Calendar API Quickstart</title>
+    <title>Scheduler</title>
     <meta charset="utf-8" />
     <!-- BOOTSTRAP -->
     <!-- First include jquery js -->
@@ -20,14 +18,41 @@
     <script src="https://apis.google.com/js/platform.js"></script>
     <script src="https://apis.google.com/js/client.js"></script>
 
+    <style>
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover {
+            background-color: #111;
+        }
+    </style>
 
 </head>
 <body>
-<p>Google Calendar API Quickstart</p>
-<!--Add buttons to initiate auth sequence and sign out-->
-<button type="button" class="btn btn-primary" id="authorize_button" style="display: none;">Authorize</button>
-<button type="button" class="btn btn-primary" id="signout_button" style="display: none;">Sign Out</button>
-<button id="btnCreateEvents" class="btn btn-primary" onclick="makeApiCall();">Create Events</button>
+
+<ul>
+    <li><a>Scheduler</a></li>
+    <li><a id="authorize_button">Login</a></li>
+    <li><a href="/" id="signout_button">Logout</a></li>
+    <li><a id="btnCreateEvents" onclick="makeApiCall();">Create Event</a></li>
+</ul>
 
 <div id="divifm">
     <iframe id="ifmCalendar"
@@ -40,7 +65,6 @@
     </iframe>
 </div>
 
-<pre id="content"></pre>
 
 <script type="text/javascript">
     // Client ID and API key from the Developer Console
@@ -168,31 +192,8 @@
      * the authorized user's calendar. If no events are found an
      * appropriate message is printed.
      */
-    function listUpcomingEvents() {
-        gapi.client.calendar.events.list({
-            'calendarId': 'primary',
-            'timeMin': (new Date()).toISOString(),
-            'showDeleted': false,
-            'singleEvents': true,
-            'maxResults': 10,
-            'orderBy': 'startTime'
-        }).then(function(response) {
-            var events = response.result.items;
-            appendPre('Upcoming events:');
-            if (events.length > 0) {
-                for (i = 0; i < events.length; i++) {
-                    var event = events[i];
-                    var when = event.start.dateTime;
-                    if (!when) {
-                        when = event.start.date;
-                    }
-                    appendPre(event.summary + ' (' + when + ')')
-                }
-            } else {
-                appendPre('No upcoming events found.');
-            }
-        });
-    }
+
+
 
     /**
      * Append a pre element to the body containing the given message
@@ -200,11 +201,7 @@
      *
      * @param {string} message Text to be placed in pre element.
      */
-    function appendPre(message) {
-        var pre = document.getElementById('content');
-        var textContent = document.createTextNode(message + '\n');
-        pre.appendChild(textContent);
-    }
+
 
     var event = {
         'summary': 'Google I/O 2015',

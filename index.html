@@ -6,43 +6,70 @@
     <title>Google Calendar API Quickstart</title>
     <meta charset="utf-8" />
     <!-- BOOTSTRAP -->
+    <!-- First include jquery js -->
+    <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://apis.google.com/js/platform.js"></script>
+    <script src="https://apis.google.com/js/client.js"></script>
+
+
 </head>
 <body>
 <p>Google Calendar API Quickstart</p>
-<button type="button" class="btn btn-primary">Add Event</button>
 <!--Add buttons to initiate auth sequence and sign out-->
-<button type="button" class="btn btn-dark">Secondary</button>
 <button type="button" class="btn btn-primary" id="authorize_button" style="display: none;">Authorize</button>
-<button type="button" class="btn btn-dark" id="signout_button" style="display: none;">Sign Out</button>
+<button type="button" class="btn btn-primary" id="signout_button" style="display: none;">Sign Out</button>
+<button id="btnCreateEvents" class="btn btn-primary" onclick="makeApiCall();">Create Events</button>
 
+<div id="divifm">
+    <iframe id="ifmCalendar"
 
-<iframe src="https://calendar.google.com/calendar/embed?src=joe.blowmit%40gmail.com&ctz=America%2FNew_York" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+            src="https://calendar.google.com/calendar/embed?src=joe.blowmit%40gmail.com&ctz=America%2FNew_York" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"
+
+            style="border-width: 0" width="950"
+
+            height="520" frameborder="0" scrolling="no">
+    </iframe>
+</div>
 
 <pre id="content"></pre>
 
 <script type="text/javascript">
     // Client ID and API key from the Developer Console
-    var CLIENT_ID = '173063735067-h6btqrp32rb3nqurdca2p2q4os5b2nuj.apps.googleusercontent.com';
-    var API_KEY = 'AIzaSyB7ijptPGPPmw-Ykrm_qBf5f5SW3C-7Qk0';
-
-    // Array of API discovery doc URLs for APIs used by the quickstart
-    var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
-
-    // Authorization scopes required by the API; multiple scopes can be
-    // included, separated by spaces.
-    var SCOPES = "https://www.googleapis.com/auth/calendar.readonly";
+    var clientId = '173063735067-h6btqrp32rb3nqurdca2p2q4os5b2nuj.apps.googleusercontent.com';
+    var apiKey = 'AIzaSyB7ijptPGPPmw-Ykrm_qBf5f5SW3C-7Qk0';
 
     var authorizeButton = document.getElementById('authorize_button');
     var signoutButton = document.getElementById('signout_button');
 
-    /**
-     *  On load, called to load the auth2 library and API client library.
-     */
+    // Array of API discovery doc URLs for APIs used by the quickstart
+    var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+
+    // date variables
+    var now = new Date();
+    today = now.toISOString();
+
+    var twoHoursLater = new Date(now.getTime() + (2 * 1000 * 60 * 60));
+    twoHoursLater = twoHoursLater.toISOString();
+
+    // enter the scope of current project (this API must be turned on in the Google console)
+    var scopes = 'https://www.googleapis.com/auth/calendar';
+
+    // OAuth2 functions
     function handleClientLoad() {
         gapi.load('client:auth2', initClient);
+    }
+
+    function checkAuth() {
+        gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: true }, handleAuthResult);
     }
 
     /**
@@ -51,21 +78,19 @@
      */
     function initClient() {
         gapi.client.init({
-            apiKey: API_KEY,
-            clientId: CLIENT_ID,
+            apiKey: apiKey,
+            clientId: clientId,
             discoveryDocs: DISCOVERY_DOCS,
-            scope: SCOPES
+            scope: scopes
         }).then(function () {
             // Listen for sign-in state changes.
             gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-
             // Handle the initial sign-in state.
             updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
             authorizeButton.onclick = handleAuthClick;
             signoutButton.onclick = handleSignoutClick;
         });
     }
-
     /**
      *  Called when the signed in status changes, to update the UI
      *  appropriately. After a sign-in, the API is called.
@@ -80,14 +105,12 @@
             signoutButton.style.display = 'none';
         }
     }
-
     /**
      *  Sign in the user upon button click.
      */
     function handleAuthClick(event) {
         gapi.auth2.getAuthInstance().signIn();
     }
-
     /**
      *  Sign out the user upon button click.
      */
@@ -95,16 +118,49 @@
         gapi.auth2.getAuthInstance().signOut();
     }
 
-    /**
-     * Append a pre element to the body containing the given message
-     * as its text node. Used to display the results of the API call.
-     *
-     * @param {string} message Text to be placed in pre element.
-     */
-    function appendPre(message) {
-        var pre = document.getElementById('content');
-        var textContent = document.createTextNode(message + '\n');
-        pre.appendChild(textContent);
+    // function triggered when user authorizes app
+    function handleAuthClick(event) {
+        //gapi.auth.authorize({ client_id: clientId, scope: scopes, immediate: false });
+        gapi.auth2.getAuthInstance().signIn();
+    }
+
+    function refreshICalendarframe() {
+        var iframe = document.getElementById('divifm');
+        iframe.innerHTML = iframe.innerHTML;
+    }
+    // setup event details
+
+    // function load the calendar api and make the api call
+    function makeApiCall() {
+        var eventResponse = document.getElementById('event-response');
+
+        gapi.client.load('calendar', 'v3', function () {					// load the calendar api (version 3)
+            var request = gapi.client.calendar.events.insert
+            ({
+                'calendarId': 'joe.blowmit@gmail.com', // calendar ID
+                "resource": event							// pass event details with api call
+            });
+
+            // handle the response from our api call
+            request.execute(function (resp) {
+                if (resp.status == 'confirmed') {
+                    refreshICalendarframe();
+                }
+            });
+        });
+    }
+
+    // FUNCTION TO DELETE EVENT
+    function deleteEvent() {
+        gapi.client.load('calendar', 'v3', function() {
+            var request = gapi.client.calendar.events.delete({
+                'calendarId': '24tn4fht2tr6mdfsdfertlsedk@group.calendar.google.com',
+                'eventId': 'Hdusrtsbs8'
+            });
+            request.execute(function(event) {
+                appendPre('Event created: ' + event.htmlLink);
+            });
+        });
     }
 
     /**
@@ -123,7 +179,6 @@
         }).then(function(response) {
             var events = response.result.items;
             appendPre('Upcoming events:');
-
             if (events.length > 0) {
                 for (i = 0; i < events.length; i++) {
                     var event = events[i];
@@ -139,12 +194,50 @@
         });
     }
 
-</script>
+    /**
+     * Append a pre element to the body containing the given message
+     * as its text node. Used to display the results of the API call.
+     *
+     * @param {string} message Text to be placed in pre element.
+     */
+    function appendPre(message) {
+        var pre = document.getElementById('content');
+        var textContent = document.createTextNode(message + '\n');
+        pre.appendChild(textContent);
+    }
 
+    var event = {
+        'summary': 'Google I/O 2015',
+        'location': '800 Howard St., San Francisco, CA 94103',
+        'description': 'A chance to hear more about Google\'s developer products.',
+        'start': {
+            'dateTime': '2018-09-16T09:00:00-07:00',
+            'timeZone': 'America/Los_Angeles'
+        },
+        'end': {
+            'dateTime': '2018-09-16T17:00:00-07:00',
+            'timeZone': 'America/Los_Angeles'
+        },
+        'recurrence': [
+            'RRULE:FREQ=DAILY;COUNT=2'
+        ],
+        'attendees': [
+            {'email': 'lpage@example.com'},
+            {'email': 'sbrin@example.com'}
+        ],
+        'reminders': {
+            'useDefault': false,
+            'overrides': [
+                {'method': 'email', 'minutes': 24 * 60},
+                {'method': 'popup', 'minutes': 10}
+            ]
+        }
+    };
+
+</script>
 <script async defer src="https://apis.google.com/js/api.js"
         onload="this.onload=function(){};handleClientLoad()"
         onreadystatechange="if (this.readyState === 'complete') this.onload()">
-</script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>

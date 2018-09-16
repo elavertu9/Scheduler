@@ -81,10 +81,10 @@
         <h2 class="modalHeader">Adding Event to Calendar:</h2>
         <input type="text" id="eventname" placeholder="Event Name:"/>
         <input type="text" id="location" placeholder="Location:"/>
-        <input type="text" id="startdate" placeholder="Start Date:"/>
-        <input type="text" id="starttime" placeholder="Start Time:"/>
-        <input type="text" id="enddate" placeholder="End Date:"/>
-        <input type="text" id="endtime" placeholder="End Time:"/>
+        <input type="text" id="startdate" placeholder="Start Date: 2018-09-17"/>
+        <input type="text" id="starttime" placeholder="Start Time: T09:00:00-07:00"/>
+        <input type="text" id="enddate" placeholder="End Date: 2018-09-17"/>
+        <input type="text" id="endtime" placeholder="End Time: T09:00:00-07:00"/>
         <button id="submitBtn" class="btn btn-primary">Submit</button>
         <button id="closeBtn" class="btn btn-primary">Close</button>
     </div>
@@ -194,7 +194,39 @@
     // setup event details
 
     // function load the calendar api and make the api call
-    function makeApiCall() {
+    function makeApiCall(eventName, location, startDate, startTime, endDate, endTime) {
+        let start = startDate.value + startTime.value;
+        let end = endDate.value + endTime.value;
+        console.log(start);
+        console.log(end);
+        var event = {
+            'summary': eventName.value,
+            'location': location.value,
+            'description': 'Description',
+            'start': {
+                'dateTime': start,
+                'timeZone': 'America/Los_Angeles'
+            },
+            'end': {
+                'dateTime': end,
+                'timeZone': 'America/Los_Angeles'
+            },
+            'recurrence': [
+                'RRULE:FREQ=DAILY;COUNT=2'
+            ],
+            'attendees': [
+                {'email': 'lpage@example.com'},
+                {'email': 'sbrin@example.com'}
+            ],
+            'reminders': {
+                'useDefault': false,
+                'overrides': [
+                    {'method': 'email', 'minutes': 24 * 60},
+                    {'method': 'popup', 'minutes': 10}
+                ]
+            }
+        };
+
         var eventResponse = document.getElementById('event-response');
 
         gapi.client.load('calendar', 'v3', function () {					// load the calendar api (version 3)
@@ -208,6 +240,7 @@
             request.execute(function (resp) {
                 if (resp.status == 'confirmed') {
                     refreshICalendarframe();
+                    closeModal();
                 }
             });
         });
@@ -272,35 +305,6 @@
      */
 
 
-    var event = {
-        'summary': 'Google I/O 2015',
-        'location': '800 Howard St., San Francisco, CA 94103',
-        'description': 'A chance to hear more about Google\'s developer products.',
-        'start': {
-            'dateTime': '2018-09-17T09:00:00-07:00',
-            'timeZone': 'America/Los_Angeles'
-        },
-        'end': {
-            'dateTime': '2018-09-17T17:00:00-07:00',
-            'timeZone': 'America/Los_Angeles'
-        },
-        'recurrence': [
-            'RRULE:FREQ=DAILY;COUNT=2'
-        ],
-        'attendees': [
-            {'email': 'lpage@example.com'},
-            {'email': 'sbrin@example.com'}
-        ],
-        'reminders': {
-            'useDefault': false,
-            'overrides': [
-                {'method': 'email', 'minutes': 24 * 60},
-                {'method': 'popup', 'minutes': 10}
-            ]
-        }
-    };
-
-
     // MODAL
     var modal = document.getElementById('simpleModal');
     var modalBtn = document.getElementById('modalBtn');
@@ -316,6 +320,13 @@
 
     function closeModal(){
         modal.style.display = 'none';
+        document.getElementById("eventname").value = "";
+        document.getElementById("location").value = "";
+        document.getElementById("startdate").value = "";
+        document.getElementById("starttime").value = "";
+        document.getElementById("enddate").value = "";
+        document.getElementById("endtime").value = "";
+        document.getElementById("submitBtn").value = "";
     }
 
     function outsideClick(e){
@@ -324,24 +335,19 @@
         }
     }
 
-    // MODAL INPUT
-    var eventName = document.getElementById("eventname");
-    var location = document.getElementById("location");
-    var startDate = document.getElementById("startdate");
-    var startTime = document.getElementById("starttime");
-    var endDate = document.getElementById("enddate");
-    var endTime = document.getElementById("endtime");
-    var submitBtn = document.getElementById("submitBtn");
-
     submitBtn.addEventListener('click', data);
 
     function data(){
-        console.log(eventName.value);
-        console.log(location.value);
-        console.log(startDate.value);
-        console.log(startTime.value);
-        console.log(endDate.value);
-        console.log(endTime.value);
+        // MODAL INPUT
+        let eventName = document.getElementById("eventname");
+        let location = document.getElementById("location");
+        let startDate = document.getElementById("startdate");
+        let startTime = document.getElementById("starttime");
+        let endDate = document.getElementById("enddate");
+        let endTime = document.getElementById("endtime");
+        let submitBtn = document.getElementById("submitBtn");
+
+        makeApiCall(eventName, location, startDate, startTime, endDate, endTime);
     }
 
 </script>
